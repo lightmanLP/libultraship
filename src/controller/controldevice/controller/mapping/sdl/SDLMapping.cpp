@@ -99,7 +99,7 @@ bool SDLMapping::UsesPlaystationLayout() {
 
 bool SDLMapping::UsesSwitchLayout() {
     auto type = GetSDLControllerType();
-    return type == SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO || type == SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_PAIR;
+    return type == SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO;
 }
 
 bool SDLMapping::UsesXboxLayout() {

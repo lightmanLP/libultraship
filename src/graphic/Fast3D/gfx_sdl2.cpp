@@ -614,6 +614,10 @@ void gfx_sdl_destroy(void) {
     SDL_Quit();
 }
 
+static void gfx_sdl_move_cursor(int x, int y) {
+    SDL_WarpMouseInWindow(wnd, x, y);
+}
+
 bool gfx_sdl_is_fullscreen(void) {
     return fullscreen_state;
 }
@@ -637,6 +641,7 @@ struct GfxWindowManagerAPI gfx_sdl = { gfx_sdl_init,
                                        gfx_sdl_can_disable_vsync,
                                        gfx_sdl_is_running,
                                        gfx_sdl_destroy,
+                                       gfx_sdl_move_cursor,
                                        gfx_sdl_is_fullscreen };
 
 #endif

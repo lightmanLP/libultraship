@@ -26,6 +26,10 @@ struct GfxWindowManagerAPI {
     bool (*can_disable_vsync)(void);
     bool (*is_running)(void);
     void (*destroy)(void);
+
+    //Mod
+    void (*move_cursor)(int x, int y);
+
     bool (*is_fullscreen)(void);
 };
 

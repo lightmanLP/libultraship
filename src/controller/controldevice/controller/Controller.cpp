@@ -127,7 +127,36 @@ void Controller::ReloadAllMappingsFromConfig() {
 }
 
 void Controller::ReadToPad(OSContPad* pad) {
+    int x, y;
+    Uint32 buttons;
     OSContPad padToBuffer = { 0 };
+
+#ifndef __WIIU__
+    SDL_PumpEvents();  // may cause smth? idk, i dont speak mcdonalds
+    buttons = SDL_GetMouseState(&x, &y);
+    wTouchX = x;
+    wTouchY = y;
+#endif
+
+    // Click Inputs
+    if ((buttons & SDL_BUTTON_LMASK) != 0) {
+        wLeftClick = 1;
+    }
+    else {
+        wLeftClick = 0;
+    }
+    if ((buttons & SDL_BUTTON_RMASK) != 0) {
+        wRightClick = 1;
+    }
+    else {
+        wRightClick = 0;
+    }
+    if ((buttons & SDL_BUTTON_MMASK) != 0) {
+        wMiddleClick = 1;
+    }
+    else {
+        wMiddleClick = 0;
+    }
 
     // Button Inputs
     for (auto [bitmask, button] : mButtons) {
@@ -137,6 +166,24 @@ void Controller::ReadToPad(OSContPad* pad) {
     // Stick Inputs
     GetLeftStick()->UpdatePad(padToBuffer.stick_x, padToBuffer.stick_y);
     GetRightStick()->UpdatePad(padToBuffer.right_stick_x, padToBuffer.right_stick_y);
+
+    // Click/Touch
+    padToBuffer.touch_x = wTouchX;
+    padToBuffer.touch_y = wTouchY;
+    padToBuffer.left_click = wLeftClick;
+    padToBuffer.right_click = wRightClick;
+    padToBuffer.middle_click = wMiddleClick;
+
+    // Mouse Inputs
+    //int x2, y2;
+    //SDL_GetRelativeMouseState(&x2, &y2);
+    //wMouseMoveX = x2;
+    //wMouseMoveY = y2;
+            //printf("%f, %f\n", wMouseMoveX, wMouseMoveY);
+
+    // Mouse
+    padToBuffer.mouse_move_x = wMouseMoveX;
+    padToBuffer.mouse_move_y = wMouseMoveY;
 
     // Gyro
     GetGyro()->UpdatePad(padToBuffer.gyro_x, padToBuffer.gyro_y);
@@ -168,6 +215,11 @@ void Controller::ReadToPad(OSContPad* pad) {
         if (pad->gyro_y == 0) {
             pad->gyro_y = padFromBuffer.gyro_y;
         }
+        pad->touch_x = padFromBuffer.touch_x;
+        pad->touch_y = padFromBuffer.touch_y;
+        pad->left_click = padFromBuffer.left_click;
+        pad->middle_click = padFromBuffer.middle_click;
+        pad->right_click = padFromBuffer.right_click;
     }
 
     while (mPadBuffer.size() > 6) {
