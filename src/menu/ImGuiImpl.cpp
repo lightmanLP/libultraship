@@ -504,7 +504,7 @@ void InitGui(WindowImpl windowImpl) {
         bool menuBarOpen = CVarGetInteger("gOpenMenuBar", 0);
         SetMenuBar(menuBarOpen);
         if (Context::GetInstance()->GetWindow()->IsFullscreen()) {
-            setCursorVisibility(menuBarOpen || CVarGetInteger("gMouseTouchEnabled", 0));
+            setCursorVisibility(menuBarOpen || CVarGetInteger("gEnhancements.Mouse.Enabled", 0));
         }
 
         LoadTexture("Game_Icon", "textures/icons/gIcon.png");
@@ -589,7 +589,7 @@ void DrawMainMenuAndCalculateGameSize(void) {
         needsSave = true;
         SetMenuBar(menuBar);
         if (wnd->IsFullscreen()) {
-            setCursorVisibility(menuBar|| CVarGetInteger("gMouseTouchEnabled", 0));
+            setCursorVisibility(menuBar|| CVarGetInteger("gEnhancements.Mouse.Enabled", 0));
             setCursorVisibility(menuBar);
         }
         Context::GetInstance()->GetControlDeck()->SaveSettings();
