@@ -38,6 +38,7 @@ class Fast3dWindow : public Ship::Window {
     void SetTextureFilter(FilteringMode filteringMode);
     void SetRendererUCode(UcodeHandlers ucode);
     void EnableSRGBMode();
+    void MoveCursor(int32_t x, int32_t y);
 
   protected:
     static bool KeyDown(int32_t scancode);

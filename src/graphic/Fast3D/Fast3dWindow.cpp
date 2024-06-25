@@ -230,6 +230,10 @@ const char* Fast3dWindow::GetKeyName(int32_t scancode) {
 }
 
 bool Fast3dWindow::KeyUp(int32_t scancode) {
+    if (scancode == 56){
+        SDL_SetRelativeMouseMode(SDL_TRUE);
+    }
+
     if (scancode ==
         Ship::Context::GetInstance()->GetConfig()->GetInt("Shortcuts.Fullscreen", Ship::KbScancode::LUS_KB_F11)) {
         Ship::Context::GetInstance()->GetWindow()->ToggleFullscreen();
@@ -241,6 +245,10 @@ bool Fast3dWindow::KeyUp(int32_t scancode) {
 }
 
 bool Fast3dWindow::KeyDown(int32_t scancode) {
+    if (scancode == 56){
+        SDL_SetRelativeMouseMode(SDL_FALSE);
+    }
+
     bool isProcessed = Ship::Context::GetInstance()->GetControlDeck()->ProcessKeyboardEvent(
         Ship::KbEventType::LUS_KB_EVENT_KEY_DOWN, static_cast<Ship::KbScancode>(scancode));
     Ship::Context::GetInstance()->GetWindow()->SetLastScancode(scancode);
@@ -263,5 +271,9 @@ void Fast3dWindow::OnFullscreenChanged(bool isNowFullscreen) {
     } else {
         wnd->SetCursorVisibility(true);
     }
+}
+
+void Fast3dWindow::MoveCursor(int32_t x, int32_t y){
+    mWindowManagerApi->move_cursor(x, y);
 }
 } // namespace Fast

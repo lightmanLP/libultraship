@@ -53,6 +53,20 @@ class Controller : public ControlDevice {
     bool HasMappingsForShipDeviceIndex(ShipDeviceIndex lusIndex);
     void MoveMappingsToDifferentController(std::shared_ptr<Controller> newController, ShipDeviceIndex lusIndex);
 
+    void PollMouseMov(OSContPad* pad, int32_t slot);
+
+    bool wLeftClick;
+    bool wRightClick;
+    bool wMiddleClick;
+    float wTouchX;
+    float wTouchY;
+
+    float wMouseMoveX;
+    float wMouseMoveY;
+
+    float wCamX;
+    float wCamY;
+
   private:
     void LoadButtonMappingFromConfig(std::string id);
     void SaveButtonMappingIdsToConfig();
