@@ -230,8 +230,10 @@ const char* Fast3dWindow::GetKeyName(int32_t scancode) {
 }
 
 bool Fast3dWindow::KeyUp(int32_t scancode) {
+    static bool relativeMouseToggle = false;
     if (scancode == 56){
-        SDL_SetRelativeMouseMode(SDL_TRUE);
+        relativeMouseToggle = !relativeMouseToggle;
+        SDL_SetRelativeMouseMode(relativeMouseToggle ? SDL_TRUE : SDL_FALSE);
     }
 
     if (scancode ==
@@ -245,10 +247,6 @@ bool Fast3dWindow::KeyUp(int32_t scancode) {
 }
 
 bool Fast3dWindow::KeyDown(int32_t scancode) {
-    if (scancode == 56){
-        SDL_SetRelativeMouseMode(SDL_FALSE);
-    }
-
     bool isProcessed = Ship::Context::GetInstance()->GetControlDeck()->ProcessKeyboardEvent(
         Ship::KbEventType::LUS_KB_EVENT_KEY_DOWN, static_cast<Ship::KbScancode>(scancode));
     Ship::Context::GetInstance()->GetWindow()->SetLastScancode(scancode);
