@@ -610,7 +610,19 @@ static void gfx_sdl_set_maximum_frame_latency(int latency) {
     // Not supported by SDL :(
 }
 
+static const char* mouse_buttons_names[] = {
+    "MouseLeft",
+    "MouseMiddle",
+    "MouseRight",
+    "MouseBackward",
+    "MouseForward"
+};
+
 static const char* gfx_sdl_get_key_name(int scancode) {
+    using Ship::KbScancode;
+    if (scancode > KbScancode::LUS_MOUSE_START && scancode < KbScancode::LUS_MOUSE_END) {
+        return mouse_buttons_names[scancode - KbScancode::LUS_MOUSE_START - 1];
+    }
     return SDL_GetScancodeName((SDL_Scancode)untranslate_scancode(scancode));
 }
 
