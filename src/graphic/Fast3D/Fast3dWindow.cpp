@@ -231,7 +231,7 @@ const char* Fast3dWindow::GetKeyName(int32_t scancode) {
 
 bool Fast3dWindow::KeyUp(int32_t scancode) {
     static bool relativeMouseToggle = false;
-    if (scancode == 56){
+    if (scancode == Ship::Context::GetInstance()->GetConfig()->GetInt("Shortcuts.MouseLock", Ship::KbScancode::LUS_KB_F2)) {
         relativeMouseToggle = !relativeMouseToggle;
         SDL_SetRelativeMouseMode(relativeMouseToggle ? SDL_TRUE : SDL_FALSE);
     }
