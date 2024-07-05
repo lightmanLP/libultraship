@@ -132,7 +132,6 @@ void Controller::ReadToPad(OSContPad* pad) {
     OSContPad padToBuffer = { 0 };
 
 #ifndef __WIIU__
-    SDL_PumpEvents();  // may cause smth? idk, i dont speak mcdonalds
     buttons = SDL_GetMouseState(&x, &y);
     wTouchX = x;
     wTouchY = y;
@@ -173,13 +172,6 @@ void Controller::ReadToPad(OSContPad* pad) {
     padToBuffer.left_click = wLeftClick;
     padToBuffer.right_click = wRightClick;
     padToBuffer.middle_click = wMiddleClick;
-
-    // Mouse Inputs
-    //int x2, y2;
-    //SDL_GetRelativeMouseState(&x2, &y2);
-    //wMouseMoveX = x2;
-    //wMouseMoveY = y2;
-            //printf("%f, %f\n", wMouseMoveX, wMouseMoveY);
 
     // Mouse
     padToBuffer.mouse_move_x = wMouseMoveX;
