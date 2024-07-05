@@ -71,7 +71,7 @@ bool ControlDeck::GamepadGameInputBlocked() {
 
 bool ControlDeck::KeyboardGameInputBlocked() {
     // block keyboard input when typing in imgui
-    return AllGameInputBlocked() || ImGui::GetIO().WantCaptureKeyboard;
+    return AllGameInputBlocked() || (ImGui::GetIO().WantCaptureKeyboard && SDL_GetRelativeMouseMode() == SDL_FALSE);
 }
 
 void ControlDeck::WriteToPad(OSContPad* pad) {
