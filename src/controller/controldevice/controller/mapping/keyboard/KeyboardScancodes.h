@@ -117,11 +117,13 @@ typedef enum KbScancode {
     LUS_KB_ARROWKEY_DOWN = 336,
     LUS_KB_MAX,
 
-    LUS_MOUSE_1 = 0x8001,
+    LUS_MOUSE_START = 0x8000,
+    LUS_MOUSE_1,
     LUS_MOUSE_2,
     LUS_MOUSE_3,
     LUS_MOUSE_4,
-    LUS_MOUSE_5
+    LUS_MOUSE_5,
+    LUS_MOUSE_END
 } KbScancode;
 
 #ifdef __cplusplus
