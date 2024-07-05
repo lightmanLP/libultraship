@@ -453,6 +453,8 @@ static void gfx_sdl_get_dimensions(uint32_t* width, uint32_t* height, int32_t* p
 static int translate_scancode(int scancode) {
     if (scancode < 512) {
         return sdl_to_lus_table[scancode];
+    } else if (scancode >= 0x8001 && scancode <= 0x8005) {
+        return scancode;
     } else {
         return 0;
     }
@@ -493,6 +495,12 @@ static void gfx_sdl_handle_single_event(SDL_Event& event) {
             break;
         case SDL_KEYUP:
             gfx_sdl_onkeyup(event.key.keysym.scancode);
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            gfx_sdl_onkeydown(0x8000 + event.button.button);
+            break;
+        case SDL_MOUSEBUTTONUP:
+            gfx_sdl_onkeyup(0x8000 + event.button.button);
             break;
 #endif
         case SDL_WINDOWEVENT:
