@@ -44,11 +44,12 @@ std::shared_ptr<Context> Context::CreateInstance(const std::string name, const s
                                                  const std::string configFilePath,
                                                  const std::vector<std::string>& otrFiles,
                                                  const std::unordered_set<uint32_t>& validHashes,
-                                                 uint32_t reservedThreadCount, AudioSettings audioSettings) {
+                                                 uint32_t reservedThreadCount, AudioSettings audioSettings,
+                                                 std::vector<CONTROLLERBUTTONS_T> additionalBitmasks) {
     if (mContext.expired()) {
         auto shared = std::make_shared<Context>(name, shortName, configFilePath);
         mContext = shared;
-        shared->Init(otrFiles, validHashes, reservedThreadCount, audioSettings);
+        shared->Init(otrFiles, validHashes, reservedThreadCount, audioSettings, additionalBitmasks);
         return shared;
     }
 
@@ -75,12 +76,12 @@ Context::Context(std::string name, std::string shortName, std::string configFile
 }
 
 void Context::Init(const std::vector<std::string>& otrFiles, const std::unordered_set<uint32_t>& validHashes,
-                   uint32_t reservedThreadCount, AudioSettings audioSettings) {
+                   uint32_t reservedThreadCount, AudioSettings audioSettings, std::vector<CONTROLLERBUTTONS_T> additionalBitmasks) {
     InitLogging();
     InitConfiguration();
     InitConsoleVariables();
     InitResourceManager(otrFiles, validHashes, reservedThreadCount);
-    InitControlDeck();
+    InitControlDeck(additionalBitmasks);
     InitCrashHandler();
     InitConsole();
     InitWindow();
