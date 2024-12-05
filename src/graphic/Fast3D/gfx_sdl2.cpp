@@ -639,4 +639,4 @@ struct GfxWindowManagerAPI gfx_sdl = { gfx_sdl_init,
                                        gfx_sdl_destroy,
                                        gfx_sdl_is_fullscreen };
 
-#endif
+#endif  // the E
