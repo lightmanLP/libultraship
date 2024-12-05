@@ -1,5 +1,7 @@
 #if defined(ENABLE_DX11) || defined(ENABLE_DX12)
 
+#include <spdlog/spdlog.h>
+
 #include <stdint.h>
 #include <math.h>
 
@@ -378,9 +380,11 @@ static LRESULT CALLBACK gfx_dxgi_wnd_proc(HWND h_wnd, UINT message, WPARAM w_par
             break;
         case WM_XBUTTONDOWN:
             dxgi.mouse_pressed[2 + l_param] = true;
+            SPDLOG_INFO("DOWN {}", l_param);
             break;
         case WM_XBUTTONUP:
             dxgi.mouse_pressed[2 + l_param] = false;
+            SPDLOG_INFO("UP {}", l_param);
             break;
         case WM_MOUSEWHEEL:
             dxgi.mouse_wheel[0] = GET_WHEEL_DELTA_WPARAM(w_param) / WHEEL_DELTA;
