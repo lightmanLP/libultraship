@@ -379,12 +379,12 @@ static LRESULT CALLBACK gfx_dxgi_wnd_proc(HWND h_wnd, UINT message, WPARAM w_par
             dxgi.mouse_pressed[2] = false;
             break;
         case WM_XBUTTONDOWN:
-            dxgi.mouse_pressed[2 + w_param] = true;
-            SPDLOG_INFO("DOWN {}", w_param);
+            dxgi.mouse_pressed[2 + GET_XBUTTON_WPARAM(w_param)] = true;
+            SPDLOG_INFO("DOWN {}", GET_XBUTTON_WPARAM(w_param));
             break;
         case WM_XBUTTONUP:
-            dxgi.mouse_pressed[2 + w_param] = false;
-            SPDLOG_INFO("UP {}", w_param);
+            dxgi.mouse_pressed[2 + GET_XBUTTON_WPARAM(w_param)] = false;
+            SPDLOG_INFO("UP {}", GET_XBUTTON_WPARAM(w_param));
             break;
         case WM_MOUSEWHEEL:
             dxgi.mouse_wheel[0] = GET_WHEEL_DELTA_WPARAM(w_param) / WHEEL_DELTA;
