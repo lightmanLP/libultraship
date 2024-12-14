@@ -10,7 +10,6 @@
 #include "graphic/Fast3D/gfx_direct3d11.h"
 #include "graphic/Fast3D/gfx_direct3d12.h"
 #include "graphic/Fast3D/gfx_pc.h"
-#include "window/Window.h"
 
 #include <fstream>
 
