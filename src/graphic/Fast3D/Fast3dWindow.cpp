@@ -283,14 +283,14 @@ bool Fast3dWindow::KeyDown(int32_t scancode) {
     return isProcessed;
 }
 
-bool Fast3dWindow::MouseButtonUp(int8_t button) {
+bool Fast3dWindow::MouseButtonUp(int button) {
     return Ship::Context::GetInstance()->GetControlDeck()->ProcessMouseEvent(
         false,
         static_cast<Ship::MouseBtn>(button)
     );
 }
 
-bool Fast3dWindow::MouseButtonDown(int8_t button) {
+bool Fast3dWindow::MouseButtonDown(int button) {
     bool isProcessed = Ship::Context::GetInstance()->GetControlDeck()->ProcessMouseEvent(
         true,
         static_cast<Ship::MouseBtn>(button)
