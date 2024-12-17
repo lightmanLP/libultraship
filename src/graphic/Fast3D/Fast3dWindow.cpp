@@ -12,6 +12,7 @@
 #include "graphic/Fast3D/gfx_pc.h"
 
 #include <fstream>
+#include "spdlog/spdlog.h"
 
 namespace Fast {
 Fast3dWindow::Fast3dWindow() : Fast3dWindow(std::vector<std::shared_ptr<Ship::GuiWindow>>()) {
@@ -268,6 +269,11 @@ bool Fast3dWindow::KeyUp(int32_t scancode) {
     if (scancode ==
         Ship::Context::GetInstance()->GetConfig()->GetInt("Shortcuts.Fullscreen", Ship::KbScancode::LUS_KB_F11)) {
         Ship::Context::GetInstance()->GetWindow()->ToggleFullscreen();
+    }
+
+    if (scancode == Ship::Context::GetInstance()->GetConfig()->GetInt("Shortcuts.MouseLock", Ship::KbScancode::LUS_KB_F2)) {
+        SPDLOG_INFO("mouse lock: {} -> inverted", Ship::Context::GetInstance()->GetWindow()->IsMouseCaptured());
+        Ship::Context::GetInstance()->GetWindow()->SetMouseCapture(!Ship::Context::GetInstance()->GetWindow()->IsMouseCaptured());
     }
 
     Ship::Context::GetInstance()->GetWindow()->SetLastScancode(-1);
