@@ -76,6 +76,7 @@ class Gui {
     void EndFrame();
     void RenderViewports();
     void DrawMenu();
+    ImGuiID GetMainGameWindowID();
 
     void SaveConsoleVariablesOnNextTick();
     void Update(WindowEvent event);
