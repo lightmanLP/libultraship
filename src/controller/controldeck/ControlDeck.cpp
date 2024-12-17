@@ -96,6 +96,9 @@ bool ControlDeck::MouseGameInputBlocked() {
     ImGuiWindow *window = ImGui::GetCurrentContext()->HoveredWindow;
     if (window == NULL) {
         return true;
+    } else {
+        //SPDLOG_INFO("ma win: ({}, {}),     == {}", window->ID, window->Name, gameWindowID);
+        //SPDLOG_INFO("ma bool: {} = {} ^ || {}. {}, {}?", ImGui::GetIO().WantCaptureMouse, ImGui::IsAnyItemHovered(), ImGui::GetCurrentContext()->OpenPopupStack.Size, ImGui::FindWindowByName("Main - Deck")->ID, ImGui::FindWindowByName("Main Game")->ID);
     }
     return AllGameInputBlocked() || (window->ID != gameWindowID);
 }
