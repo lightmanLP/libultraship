@@ -929,9 +929,9 @@ void Gui::SetMenuBar(std::shared_ptr<GuiMenuBar> menuBar) {
     }
 
     if (Context::GetInstance()->GetWindow()->IsFullscreen()) {
-        Context::GetInstance()->GetWindow()->SetCursorVisibility(
+        Context::GetInstance()->GetWindow()->SetMouseCapture(!(
             (GetMenuBar() && GetMenuBar()->IsVisible()) ||
-            Context::GetInstance()->GetWindow()->ShouldForceCursorVisibility());
+            Context::GetInstance()->GetWindow()->ShouldForceCursorVisibility()));
     }
 }
 
@@ -943,9 +943,9 @@ void Gui::SetMenu(std::shared_ptr<GuiWindow> menu) {
     }
 
     if (Context::GetInstance()->GetWindow()->IsFullscreen()) {
-        Context::GetInstance()->GetWindow()->SetCursorVisibility(
+        Context::GetInstance()->GetWindow()->SetMouseCapture(!(
             (GetMenu() && GetMenu()->IsVisible()) ||
-            Context::GetInstance()->GetWindow()->ShouldForceCursorVisibility());
+            Context::GetInstance()->GetWindow()->ShouldForceCursorVisibility()));
     }
 }
 
