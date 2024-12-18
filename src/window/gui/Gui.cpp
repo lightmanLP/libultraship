@@ -355,6 +355,7 @@ void Gui::DrawMenu() {
             }
         }
         if (wnd->IsFullscreen()) {
+            // TODO: mouse capture?
             Context::GetInstance()->GetWindow()->SetCursorVisibility(GetMenuOrMenubarVisible() ||
                                                                      wnd->ShouldForceCursorVisibility());
         }
