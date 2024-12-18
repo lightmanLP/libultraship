@@ -2,6 +2,7 @@
 #include <spdlog/spdlog.h>
 
 #include "controller/controldevice/controller/mapping/keyboard/KeyboardKeyToAxisDirectionMapping.h"
+#include "controller/controldevice/controller/mapping/mouse/MouseKeyToAxisDirectionMapping.h"
 
 #include "controller/controldevice/controller/mapping/factories/AxisDirectionMappingFactory.h"
 
@@ -10,6 +11,8 @@
 #include "utils/StringHelper.h"
 #include <sstream>
 #include <algorithm>
+
+#include <imgui.h>
 
 // for some reason windows isn't seeing M_PI
 // this is copied from my system's math.h
@@ -23,7 +26,7 @@
 namespace Ship {
 ControllerStick::ControllerStick(uint8_t portIndex, Stick stick)
     : mPortIndex(portIndex), mStick(stick), mUseKeydownEventToCreateNewMapping(false),
-      mKeyboardScancodeForNewMapping(KbScancode::LUS_KB_UNKNOWN) {
+      mKeyboardScancodeForNewMapping(KbScancode::LUS_KB_UNKNOWN), mMouseButtonForNewMapping(MouseBtn::MOUSE_BTN_UNKNOWN) {
     mSensitivityPercentage = DEFAULT_STICK_SENSITIVITY_PERCENTAGE;
     mSensitivity = 1.0f;
     mDeadzonePercentage = DEFAULT_STICK_DEADZONE_PERCENTAGE;
@@ -269,9 +272,10 @@ bool ControllerStick::AddOrEditAxisDirectionMappingFromRawPress(Direction direct
     if (mKeyboardScancodeForNewMapping != LUS_KB_UNKNOWN) {
         mapping = std::make_shared<KeyboardKeyToAxisDirectionMapping>(mPortIndex, mStick, direction,
                                                                       mKeyboardScancodeForNewMapping);
-    }
-
-    if (mapping == nullptr) {
+    } else if (!ImGui::IsAnyItemHovered() && mMouseButtonForNewMapping != MouseBtn::MOUSE_BTN_UNKNOWN) {
+        // TODO: I dont think direct ImGui calls should be here (again)
+        mapping = std::make_shared<MouseKeyToAxisDirectionMapping>(mPortIndex, mStick, direction, mMouseButtonForNewMapping);
+    } else {
         mapping = AxisDirectionMappingFactory::CreateAxisDirectionMappingFromSDLInput(mPortIndex, mStick, direction);
     }
 
@@ -280,6 +284,7 @@ bool ControllerStick::AddOrEditAxisDirectionMappingFromRawPress(Direction direct
     }
 
     mKeyboardScancodeForNewMapping = LUS_KB_UNKNOWN;
+    mMouseButtonForNewMapping = MouseBtn::MOUSE_BTN_UNKNOWN;
     mUseKeydownEventToCreateNewMapping = false;
 
     if (id != "") {
@@ -315,9 +320,13 @@ void ControllerStick::UpdatePad(int8_t& x, int8_t& y) {
 }
 
 bool ControllerStick::ProcessKeyboardEvent(KbEventType eventType, KbScancode scancode) {
-    if (mUseKeydownEventToCreateNewMapping && eventType == LUS_KB_EVENT_KEY_DOWN) {
-        mKeyboardScancodeForNewMapping = scancode;
-        return true;
+    if (mUseKeydownEventToCreateNewMapping) {
+        if (eventType == LUS_KB_EVENT_KEY_DOWN) {
+            mKeyboardScancodeForNewMapping = scancode;
+            return true;
+        } else {
+            mKeyboardScancodeForNewMapping = LUS_KB_UNKNOWN;
+        }
     }
 
     bool result = false;
@@ -328,6 +337,31 @@ bool ControllerStick::ProcessKeyboardEvent(KbEventType eventType, KbScancode sca
                     std::dynamic_pointer_cast<KeyboardKeyToAxisDirectionMapping>(mapping);
                 if (ktoadMapping != nullptr) {
                     result = result || ktoadMapping->ProcessKeyboardEvent(eventType, scancode);
+                }
+            }
+        }
+    }
+    return result;
+}
+
+bool ControllerStick::ProcessMouseEvent(bool isPressed, MouseBtn button) {
+    if (mUseKeydownEventToCreateNewMapping) {
+        if (isPressed) {
+            mMouseButtonForNewMapping = button;
+            return true;
+        } else {
+            mMouseButtonForNewMapping = MouseBtn::MOUSE_BTN_UNKNOWN;
+        }
+    }
+
+    bool result = false;
+    for (auto [direction, mappings] : mAxisDirectionMappings) {
+        for (auto [id, mapping] : mappings) {
+            if (mapping->GetMappingType() == MAPPING_TYPE_MOUSE) {
+                std::shared_ptr<MouseKeyToAxisDirectionMapping> mtoadMapping =
+                    std::dynamic_pointer_cast<MouseKeyToAxisDirectionMapping>(mapping);
+                if (mtoadMapping != nullptr) {
+                    result = result || mtoadMapping->ProcessMouseEvent(isPressed, button);
                 }
             }
         }
