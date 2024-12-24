@@ -19,6 +19,7 @@ void InputEditorWindow::InitElement() {
     mRumbleTimer = INT32_MAX;
     mRumbleMappingToTest = nullptr;
     mInputEditorPopupOpen = false;
+    mCurrentMappingPopupId = 0;
 
     mButtonsBitmasks = { BTN_A, BTN_B, BTN_START, BTN_L, BTN_R, BTN_Z, BTN_CUP, BTN_CDOWN, BTN_CLEFT, BTN_CRIGHT };
     mDpadBitmasks = { BTN_DUP, BTN_DDOWN, BTN_DLEFT, BTN_DRIGHT };
@@ -217,6 +218,7 @@ void InputEditorWindow::DrawButtonLineAddMappingButton(uint8_t port, CONTROLLERB
     if (ImGui::Button(StringHelper::Sprintf("%s###addButtonMappingButton%d-%d", ICON_FA_PLUS, port, bitmask).c_str(),
                       ImVec2(SCALE_IMGUI_SIZE(20.0f), 0.0f))) {
         ImGui::OpenPopup(popupId.c_str());
+        mCurrentMappingPopupId = ImGui::GetID(popupId.c_str());
     };
     ImGui::PopStyleVar();
 
@@ -278,6 +280,7 @@ void InputEditorWindow::DrawButtonLineEditMappingButton(uint8_t port, CONTROLLER
                 .c_str(),
             ImVec2(ImGui::CalcTextSize(physicalInputDisplayName.c_str()).x + SCALE_IMGUI_SIZE(12.0f), 0.0f))) {
         ImGui::OpenPopup(popupId.c_str());
+        mCurrentMappingPopupId = ImGui::GetID(popupId.c_str());
     }
     if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal | ImGuiHoveredFlags_NoSharedDelay)) {
         ImGui::SetTooltip("%s", mapping->GetPhysicalDeviceName().c_str());
@@ -325,6 +328,7 @@ void InputEditorWindow::DrawButtonLineEditMappingButton(uint8_t port, CONTROLLER
         if (ImGui::Button(StringHelper::Sprintf("%s###editAxisThresholdButton%s", ICON_FA_COG, id.c_str()).c_str(),
                           ImVec2(ImGui::CalcTextSize(ICON_FA_COG).x + SCALE_IMGUI_SIZE(10.0f), 0.0f))) {
             ImGui::OpenPopup(popupId.c_str());
+            mCurrentMappingPopupId = ImGui::GetID(popupId.c_str());
         }
         if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal | ImGuiHoveredFlags_NoSharedDelay)) {
             ImGui::SetTooltip("Edit axis threshold");
@@ -460,6 +464,7 @@ void InputEditorWindow::DrawStickDirectionLineAddMappingButton(uint8_t port, uin
                 .c_str(),
             ImVec2(SCALE_IMGUI_SIZE(20.0f), 0.0f))) {
         ImGui::OpenPopup(popupId.c_str());
+        mCurrentMappingPopupId = ImGui::GetID(popupId.c_str());
     };
     ImGui::PopStyleVar();
 
@@ -546,6 +551,7 @@ void InputEditorWindow::DrawStickDirectionLineEditMappingButton(uint8_t port, ui
                 .c_str(),
             ImVec2(ImGui::CalcTextSize(physicalInputDisplayName.c_str()).x + SCALE_IMGUI_SIZE(12.0f), 0.0f))) {
         ImGui::OpenPopup(popupId.c_str());
+        mCurrentMappingPopupId = ImGui::GetID(popupId.c_str());
     }
     if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal | ImGuiHoveredFlags_NoSharedDelay)) {
         ImGui::SetTooltip("%s", mapping->GetPhysicalDeviceName().c_str());
@@ -822,6 +828,7 @@ void InputEditorWindow::DrawAddRumbleMappingButton(uint8_t port) {
     if (ImGui::Button(StringHelper::Sprintf("%s###addRumbleMapping%d", ICON_FA_PLUS, port).c_str(),
                       ImVec2(SCALE_IMGUI_SIZE(20.0f), SCALE_IMGUI_SIZE(20.0f)))) {
         ImGui::OpenPopup(popupId.c_str());
+        mCurrentMappingPopupId = ImGui::GetID(popupId.c_str());
     }
     ImGui::PopStyleVar();
 
@@ -985,6 +992,21 @@ void InputEditorWindow::DrawRumbleSection(uint8_t port) {
     DrawAddRumbleMappingButton(port);
 }
 
+bool InputEditorWindow::IsMouseMappingBlocked() {
+    if (mCurrentMappingPopupId == 0) {
+        return true;
+    }
+    ImGuiContext* ctx = ImGui::GetCurrentContext();
+    if (ctx->HoveredWindow == NULL) {
+        return true;
+    }
+    ImGuiPopupData& popup = ctx->OpenPopupStack.back();
+    if (popup.Window == NULL) {
+        return true;
+    }
+    return !(ctx->HoveredWindow->ID == popup.Window->ID && popup.PopupId == mCurrentMappingPopupId);
+}
+
 void InputEditorWindow::DrawRemoveLEDMappingButton(uint8_t port, std::string id) {
     ImGui::SameLine();
     ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(1.0f, 0.5f));
@@ -1002,6 +1024,7 @@ void InputEditorWindow::DrawAddLEDMappingButton(uint8_t port) {
     if (ImGui::Button(StringHelper::Sprintf("%s###addLEDMapping%d", ICON_FA_PLUS, port).c_str(),
                       ImVec2(SCALE_IMGUI_SIZE(20.0f), SCALE_IMGUI_SIZE(20.0f)))) {
         ImGui::OpenPopup(popupId.c_str());
+        mCurrentMappingPopupId = ImGui::GetID(popupId.c_str());
     }
     ImGui::PopStyleVar();
 
@@ -1081,6 +1104,7 @@ void InputEditorWindow::DrawAddGyroMappingButton(uint8_t port) {
     if (ImGui::Button(StringHelper::Sprintf("%s###addGyroMapping%d", ICON_FA_PLUS, port).c_str(),
                       ImVec2(SCALE_IMGUI_SIZE(20.0f), SCALE_IMGUI_SIZE(20.0f)))) {
         ImGui::OpenPopup(popupId.c_str());
+        mCurrentMappingPopupId = ImGui::GetID(popupId.c_str());
     }
     ImGui::PopStyleVar();
 

@@ -2,6 +2,7 @@
 
 #include "stdint.h"
 #include "window/gui/GuiWindow.h"
+#include "window/gui/BaseInputEditor.h"
 #ifndef IMGUI_DEFINE_MATH_OPERATORS
 #define IMGUI_DEFINE_MATH_OPERATORS
 #endif
@@ -14,7 +15,7 @@
 
 namespace Ship {
 
-class InputEditorWindow : public GuiWindow {
+class InputEditorWindow : public GuiWindow, public BaseInputEditor {
   public:
     using GuiWindow::GuiWindow;
     ~InputEditorWindow();
@@ -22,6 +23,7 @@ class InputEditorWindow : public GuiWindow {
     void DrawInputChip(const char* buttonName, ImVec4 color);
     void DrawAnalogPreview(const char* label, ImVec2 stick, float deadzone = 0, bool gyro = false);
     bool TestingRumble();
+    bool IsMouseMappingBlocked() override;
 
   protected:
     void InitElement() override;
@@ -76,6 +78,7 @@ class InputEditorWindow : public GuiWindow {
     void DrawGyroDeviceIcons(uint8_t portIndex);
     void DrawLEDDeviceIcons(uint8_t portIndex);
     bool mInputEditorPopupOpen;
+    ImGuiID mCurrentMappingPopupId;
     void DrawSetDefaultsButton(uint8_t portIndex);
     void DrawClearAllButton(uint8_t portIndex);
 

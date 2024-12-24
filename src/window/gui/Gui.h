@@ -80,6 +80,7 @@ class Gui {
     ImGuiID GetMainGameWindowID();
 
     void AddGuiWindow(std::shared_ptr<GuiWindow> guiWindow);
+    void AddGuiWindow(std::shared_ptr<GuiWindow> guiWindow, std::string name);
     std::shared_ptr<GuiWindow> GetGuiWindow(const std::string& name);
     void RemoveGuiWindow(std::shared_ptr<GuiWindow> guiWindow);
     void RemoveGuiWindow(const std::string& name);
@@ -99,7 +100,6 @@ class Gui {
     void SetMenu(std::shared_ptr<GuiWindow> menu);
     std::shared_ptr<GuiWindow> GetMenu();
     bool GetMenuOrMenubarVisible();
-    bool IsMouseOverAnyGuiItem();
 
     bool GamepadNavigationEnabled();
     void BlockGamepadNavigation();

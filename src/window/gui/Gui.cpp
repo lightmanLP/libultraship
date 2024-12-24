@@ -770,13 +770,19 @@ void Gui::SaveConsoleVariablesNextFrame() {
 }
 
 void Gui::AddGuiWindow(std::shared_ptr<GuiWindow> guiWindow) {
-    if (mGuiWindows.contains(guiWindow->GetName())) {
-        SPDLOG_ERROR("ImGui::AddGuiWindow: Attempting to add duplicate window name {}", guiWindow->GetName());
-        return;
-    }
+    return Gui::AddGuiWindow(guiWindow, guiWindow->GetName());
+}
 
-    mGuiWindows[guiWindow->GetName()] = guiWindow;
-    guiWindow->Init();
+void Gui::AddGuiWindow(std::shared_ptr<GuiWindow> guiWindow, std::string name) {
+    if (mGuiWindows.contains(guiWindow->GetName())) {
+        SPDLOG_ERROR("ImGui::AddGuiWindow: Attempting to add duplicate window name {}", name);
+        if (mGuiWindows.contains(name)) {
+            return;
+        }
+
+        mGuiWindows[name] = guiWindow;
+        guiWindow->Init();
+    }
 }
 
 void Gui::RemoveGuiWindow(std::shared_ptr<GuiWindow> guiWindow) {
@@ -988,10 +994,6 @@ std::shared_ptr<GuiMenuBar> Gui::GetMenuBar() {
 
 bool Gui::GetMenuOrMenubarVisible() {
     return (GetMenuBar() && GetMenuBar()->IsVisible()) || (GetMenu() && GetMenu()->IsVisible());
-}
-
-bool Gui::IsMouseOverAnyGuiItem() {
-    return ImGui::IsAnyItemHovered();
 }
 
 std::shared_ptr<GuiWindow> Gui::GetMenu() {

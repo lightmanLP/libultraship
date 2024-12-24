@@ -9,6 +9,7 @@
 #endif
 #include <imgui.h>
 #include "controller/deviceindex/ShipDeviceIndexMappingManager.h"
+#include "window/gui/BaseInputEditor.h"
 
 namespace Ship {
 
@@ -92,6 +93,19 @@ bool ControlDeck::MouseGameInputBlocked() {
     }
     return AllGameInputBlocked() ||
            (window->ID != Context::GetInstance()->GetWindow()->GetGui()->GetMainGameWindowID());
+}
+
+bool ControlDeck::MouseMappingInputBlocked() {
+    static std::shared_ptr<BaseInputEditor> inputEditor = nullptr;
+    if (inputEditor == nullptr) {
+        inputEditor = std::dynamic_pointer_cast<BaseInputEditor>(
+            Ship::Context::GetInstance()->GetWindow()->GetGui()->GetGuiWindow("Custom Input Editor"));
+    }
+    if (inputEditor == nullptr) {
+        inputEditor = std::dynamic_pointer_cast<BaseInputEditor>(
+            Ship::Context::GetInstance()->GetWindow()->GetGui()->GetGuiWindow("Input Editor"));
+    }
+    return ImGui::IsAnyItemHovered() || inputEditor->IsMouseMappingBlocked();
 }
 
 std::shared_ptr<Controller> ControlDeck::GetControllerByPort(uint8_t port) {
