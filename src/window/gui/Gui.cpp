@@ -957,6 +957,10 @@ bool Gui::GetMenuOrMenubarVisible() {
     return (GetMenuBar() && GetMenuBar()->IsVisible()) || (GetMenu() && GetMenu()->IsVisible());
 }
 
+bool Gui::IsMouseOverAnyGuiItem() {
+    return ImGui::IsAnyItemHovered();
+}
+
 bool Gui::IsMouseOverActivePopup() {
     ImGuiContext* ctx = ImGui::GetCurrentContext();
     if (ctx->OpenPopupStack.Size == 0 || ctx->HoveredWindow == NULL) {

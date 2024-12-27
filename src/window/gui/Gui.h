@@ -104,6 +104,7 @@ class Gui {
     std::shared_ptr<GuiWindow> GetMenu();
     bool GetPadBtnTogglesMenu();
     void SetPadBtnTogglesMenu();
+    bool IsMouseOverAnyGuiItem();
     bool IsMouseOverActivePopup();
 
     void ImGuiBackendNewFrame();
