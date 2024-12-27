@@ -957,6 +957,18 @@ bool Gui::GetMenuOrMenubarVisible() {
     return (GetMenuBar() && GetMenuBar()->IsVisible()) || (GetMenu() && GetMenu()->IsVisible());
 }
 
+bool Gui::IsMouseOverActivePopup() {
+    ImGuiContext* ctx = ImGui::GetCurrentContext();
+    if (ctx->OpenPopupStack.Size == 0 || ctx->HoveredWindow == NULL) {
+        return false;
+    }
+    ImGuiPopupData data = ctx->OpenPoupStack.back();
+    if (data.Window == null) {
+        return false;
+    }
+    return (ctx->HoveredWindow->ID == data.Window->ID);
+}
+
 std::shared_ptr<GuiWindow> Gui::GetMenu() {
     return mMenu;
 }

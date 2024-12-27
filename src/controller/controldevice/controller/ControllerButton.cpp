@@ -11,6 +11,7 @@
 #include <algorithm>
 
 #include <imgui.h>
+#include "Context.h"
 
 namespace Ship {
 ControllerButton::ControllerButton(uint8_t portIndex, CONTROLLERBUTTONS_T bitmask)
@@ -181,7 +182,7 @@ bool ControllerButton::AddOrEditButtonMappingFromRawPress(CONTROLLERBUTTONS_T bi
     mUseKeydownEventToCreateNewMapping = true;
     if (mKeyboardScancodeForNewMapping != LUS_KB_UNKNOWN) {
         mapping = std::make_shared<KeyboardKeyToButtonMapping>(mPortIndex, bitmask, mKeyboardScancodeForNewMapping);
-    } else if (!ImGui::IsAnyItemHovered() && mMouseButtonForNewMapping != MouseBtn::MOUSE_BTN_UNKNOWN) {
+    } else if (!ImGui::IsAnyItemHovered() && Context::GetInstance()->GetWindow()->GetGui()->IsMouseOverActivePopup() && mMouseButtonForNewMapping != MouseBtn::MOUSE_BTN_UNKNOWN) {
         // TODO: I dont think direct ImGui calls should be here
         mapping = std::make_shared<MouseKeyToButtonMapping>(mPortIndex, bitmask, mMouseButtonForNewMapping);
     } else {
