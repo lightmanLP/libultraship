@@ -962,8 +962,8 @@ bool Gui::IsMouseOverActivePopup() {
     if (ctx->OpenPopupStack.Size == 0 || ctx->HoveredWindow == NULL) {
         return false;
     }
-    ImGuiPopupData data = ctx->OpenPoupStack.back();
-    if (data.Window == null) {
+    ImGuiPopupData data = ctx->OpenPopupStack.back();
+    if (data.Window == NULL) {
         return false;
     }
     return (ctx->HoveredWindow->ID == data.Window->ID);
