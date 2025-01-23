@@ -17,7 +17,7 @@ set(imgui_apply_patch_if_needed git apply ${imgui_fixes_and_config_patch_file} $
 # Resets code and reapply patch, if old (potentially incompatible) patch applied
 set(imgui_apply_patch_if_needed_with_reset ${imgui_apply_patch_if_needed} || (git status --porcelain && git reset --hard && (${imgui_apply_patch_if_needed})))
 if (NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    set(imgui_apply_patch_if_needed_with_reset sh -c ${imgui_apply_patch_if_needed_with_reset})
+    set(imgui_apply_patch_if_needed_with_reset sh -c "${imgui_apply_patch_if_needed_with_reset}")
 endif()
 
 FetchContent_Declare(
@@ -59,7 +59,7 @@ if(NOT EXCLUDE_MPQ_SUPPORT)
     # Resets code and reapply patch, if old (potentially incompatible) patch applied
     set(stormlib_apply_patch_if_needed_with_reset ${stormlib_apply_patch_if_needed} || (git status --porcelain && git reset --hard && (${stormlib_apply_patch_if_needed})))
     if (NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
-        set(stormlib_apply_patch_if_needed_with_reset sh -c ${stormlib_apply_patch_if_needed_with_reset})
+        set(stormlib_apply_patch_if_needed_with_reset sh -c "${stormlib_apply_patch_if_needed_with_reset}")
     endif()
 
     FetchContent_Declare(
