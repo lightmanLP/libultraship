@@ -10,6 +10,7 @@ endif()
 
 #=================== ImGui ===================
 set(imgui_fixes_and_config_patch_file ${CMAKE_CURRENT_SOURCE_DIR}/cmake/dependencies/patches/imgui-fixes-and-config.patch)
+set(CMAKE_EXECUTE_PROCESS_COMMAND_ECHO STDOUT)
 
 # Applies the patch or checks if it has already been applied successfully previously. Will error otherwise.
 set(imgui_apply_patch_if_needed git apply ${imgui_fixes_and_config_patch_file} ${git_hide_output} || git apply --reverse --check ${imgui_fixes_and_config_patch_file})
