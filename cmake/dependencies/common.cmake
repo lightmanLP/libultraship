@@ -16,6 +16,7 @@ set(CMAKE_EXECUTE_PROCESS_COMMAND_ECHO STDOUT)
 set(imgui_apply_patch_if_needed git apply ${imgui_fixes_and_config_patch_file} ${git_hide_output} || git apply --reverse --check ${imgui_fixes_and_config_patch_file})
 # Resets code and reapply patch, if old (potentially incompatible) patch applied
 set(imgui_apply_patch_if_needed_with_reset ${imgui_apply_patch_if_needed} || (git status --porcelain && git reset --hard && (${imgui_apply_patch_if_needed})))
+string(REPLACE " " ";" imgui_apply_patch_if_needed_with_reset ${imgui_apply_patch_if_needed_with_reset})
 
 FetchContent_Declare(
     ImGui
@@ -54,6 +55,7 @@ if(NOT EXCLUDE_MPQ_SUPPORT)
     set(stormlib_apply_patch_if_needed git apply ${stormlib_patch_file} ${git_hide_output} || git apply --reverse --check ${stormlib_patch_file})
     # Resets code and reapply patch, if old (potentially incompatible) patch applied
     set(stormlib_apply_patch_if_needed_with_reset ${stormlib_apply_patch_if_needed} || (git status --porcelain && git reset --hard && (${stormlib_apply_patch_if_needed})))
+    string(REPLACE " " ";" stormlib_apply_patch_if_needed_with_reset ${stormlib_apply_patch_if_needed_with_reset})
 
     FetchContent_Declare(
         StormLib
