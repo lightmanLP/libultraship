@@ -50,6 +50,7 @@
 #ifndef HID_USAGE_GENERIC_MOUSE
 #define HID_USAGE_GENERIC_MOUSE ((unsigned short)0x02)
 #endif
+using QWORD = uint64_t; // For NEXTRAWINPUTBLOCK
 
 using namespace Microsoft::WRL; // For ComPtr
 
@@ -435,16 +436,7 @@ static LRESULT CALLBACK gfx_dxgi_wnd_proc(HWND h_wnd, UINT message, WPARAM w_par
             dxgi.mouse_wheel[1] = GET_WHEEL_DELTA_WPARAM(w_param) / WHEEL_DELTA;
             break;
         case WM_INPUT: {
-            if (dxgi.is_mouse_captured && dxgi.in_focus) {
-                uint32_t size = sizeof(RAWINPUT);
-                static RAWINPUT raw[sizeof(RAWINPUT)];
-                GetRawInputData((HRAWINPUT)l_param, RID_INPUT, raw, &size, sizeof(RAWINPUTHEADER));
-
-                if (raw->header.dwType == RIM_TYPEMOUSE) {
-                    dxgi.raw_mouse_delta_buf.x += raw->data.mouse.lLastX;
-                    dxgi.raw_mouse_delta_buf.y += raw->data.mouse.lLastY;
-                }
-            }
+            SPDLOG_INFO("LIAR LIAR PANTS ON FIRE!");
             break;
         }
         case WM_DROPFILES:
@@ -473,6 +465,37 @@ static LRESULT CALLBACK gfx_dxgi_wnd_proc(HWND h_wnd, UINT message, WPARAM w_par
             return DefWindowProcW(h_wnd, message, w_param, l_param);
     }
     return 0;
+}
+
+void gfx_dxgi_handle_raw_input_buffered() {
+    if (!(dxgi.is_mouse_captured && dxgi.in_focus)) {
+        return;
+    }
+
+    uint32_t size = sizeof(RAWINPUT);
+    static RAWINPUT raw[sizeof(RAWINPUT)];
+    // something completely useless ig?
+    // if (GetRawInputBuffer(NULL, &size, sizeof(RAWINPUTHEADER)) == -1) {
+    //     return;
+    // }
+
+    UINT count = GetRawInputBuffer(raw, &size, sizeof(RAWINPUTHEADER));
+    if (count == -1) {
+        return;
+    }
+
+    RAWINPUT* input = raw;
+    for (auto i = 0; i < count; i++) {
+        if (input->header.dwType == RIM_TYPEMOUSE) {
+            dxgi.raw_mouse_delta_buf.x += input->data.mouse.lLastX;
+            dxgi.raw_mouse_delta_buf.y += input->data.mouse.lLastY;
+        }
+
+        input = NEXTRAWINPUTBLOCK(input);
+    }
+
+    RAWINPUT* rawptr = raw;
+    DefRawInputProc(&rawptr, count, sizeof(RAWINPUTHEADER));
 }
 
 void gfx_dxgi_init(const char* game_name, const char* gfx_api_name, bool start_in_fullscreen, uint32_t width,
@@ -676,6 +699,8 @@ static void gfx_dxgi_get_dimensions(uint32_t* width, uint32_t* height, int32_t* 
 }
 
 static void gfx_dxgi_handle_events() {
+    gfx_dxgi_handle_raw_input_buffered();
+
     MSG msg;
     while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE)) {
         if (msg.message == WM_QUIT) {
