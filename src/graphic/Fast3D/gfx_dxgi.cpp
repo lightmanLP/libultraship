@@ -474,10 +474,6 @@ void gfx_dxgi_handle_raw_input_buffered() {
 
     uint32_t size = sizeof(RAWINPUT);
     static RAWINPUT raw[sizeof(RAWINPUT)];
-    // something completely useless ig?
-    // if (GetRawInputBuffer(NULL, &size, sizeof(RAWINPUTHEADER)) == -1) {
-    //     return;
-    // }
 
     UINT count = GetRawInputBuffer(raw, &size, sizeof(RAWINPUTHEADER));
     if (count == -1) {
@@ -702,7 +698,15 @@ static void gfx_dxgi_handle_events() {
     gfx_dxgi_handle_raw_input_buffered();
 
     MSG msg;
-    while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE)) {
+    while (PeekMessageW(&msg, nullptr, 0, WM_INPUT - 1, PM_REMOVE)) {
+        if (msg.message == WM_QUIT) {
+            dxgi.is_running = false;
+            break;
+        }
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+    while (PeekMessageW(&msg, nullptr, WM_INPUT + 1, (UINT)-1, PM_REMOVE)) {
         if (msg.message == WM_QUIT) {
             dxgi.is_running = false;
             break;
