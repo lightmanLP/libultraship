@@ -464,10 +464,6 @@ static LRESULT CALLBACK gfx_dxgi_wnd_proc(HWND h_wnd, UINT message, WPARAM w_par
 }
 
 void gfx_dxgi_handle_raw_input_buffered() {
-    if (!(dxgi.is_mouse_captured && dxgi.in_focus)) {
-        return;
-    }
-
     static UINT offset = -1;
     if (offset == -1) {
         offset = sizeof(RAWINPUTHEADER);
