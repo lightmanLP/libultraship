@@ -504,13 +504,15 @@ void gfx_dxgi_handle_raw_input_buffered() {
             // there are no events
             break;
         } else {
-            while (count--) {
-                if (input->header.dwType == RIM_TYPEMOUSE) {
-                    RAWMOUSE* rawmouse = (RAWMOUSE*)((BYTE*)input + offset);
-                    dxgi.raw_mouse_delta_buf.x += rawmouse->lLastX;
-                    dxgi.raw_mouse_delta_buf.y += rawmouse->lLastY;
+            if (dxgi.is_mouse_captured && dxgi.in_focus) {
+                while (count--) {
+                    if (input->header.dwType == RIM_TYPEMOUSE) {
+                        RAWMOUSE* rawmouse = (RAWMOUSE*)((BYTE*)input + offset);
+                        dxgi.raw_mouse_delta_buf.x += rawmouse->lLastX;
+                        dxgi.raw_mouse_delta_buf.y += rawmouse->lLastY;
+                    }
+                    input = NEXTRAWINPUTBLOCK(input);
                 }
-                input = NEXTRAWINPUTBLOCK(input);
             }
         }
     }
