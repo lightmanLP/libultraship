@@ -472,26 +472,63 @@ void gfx_dxgi_handle_raw_input_buffered() {
         return;
     }
 
-    uint32_t size = sizeof(RAWINPUT);
-    static RAWINPUT raw[sizeof(RAWINPUT)];
+    static UINT offset = -1;
+    if (offset == -1) {
+        offset = sizeof(RAWINPUTHEADER);
 
-    UINT count = GetRawInputBuffer(raw, &size, sizeof(RAWINPUTHEADER));
-    if (count == -1) {
-        return;
-    }
-
-    RAWINPUT* input = raw;
-    for (auto i = 0; i < count; i++) {
-        if (input->header.dwType == RIM_TYPEMOUSE) {
-            dxgi.raw_mouse_delta_buf.x += input->data.mouse.lLastX;
-            dxgi.raw_mouse_delta_buf.y += input->data.mouse.lLastY;
+        BOOL isWow64;
+        if (IsWow64Process(GetCurrentProcess(), &isWow64) && isWow64) {
+            offset += 8;
         }
-
-        input = NEXTRAWINPUTBLOCK(input);
     }
 
-    RAWINPUT* rawptr = raw;
-    DefRawInputProc(&rawptr, count, sizeof(RAWINPUTHEADER));
+    static BYTE* buf = NULL;
+    static size_t bufsize;
+    static const UINT RAWINPUT_BUFFER_SIZE_INCREMENT = 48 * 4; // 4 64-bit raw mouse packets
+
+    UINT total = 0;
+    RAWINPUT* input = (RAWINPUT*)buf;
+    while (true) {
+        UINT size = bufsize - (UINT)((BYTE*)input - buf);
+        UINT count = GetRawInputBuffer(input, &size, sizeof(RAWINPUTHEADER));
+
+        if (!buf || (count == -1 && GetLastError() == ERROR_INSUFFICIENT_BUFFER)) {
+            // realloc
+            BYTE* newbuf = (BYTE*)std::realloc(buf, bufsize + RAWINPUT_BUFFER_SIZE_INCREMENT);
+            if (!newbuf) {
+                break;
+            }
+            input = (RAWINPUT*)(newbuf + ((BYTE*)input - buf));
+            buf = newbuf;
+            bufsize += RAWINPUT_BUFFER_SIZE_INCREMENT;
+        } else if (count == -1) {
+            // unhandled error
+            DWORD err = GetLastError();
+            fprintf(stderr, "Error: %lu\n", err);
+        } else if (count == 0) {
+            // there are no events left
+            break;
+        } else {
+            total += count;
+
+            // skip to the end of buffer
+            while (count--) {
+                input = NEXTRAWINPUTBLOCK(input);
+            }
+        }
+    }
+
+    if (total > 0) {
+        input = (RAWINPUT*)buf;
+        for (UINT i = 0; i < total; i++) {
+            if (input->header.dwType == RIM_TYPEMOUSE) {
+                RAWMOUSE* rawmouse = (RAWMOUSE*)((BYTE*)input + offset);
+                dxgi.raw_mouse_delta_buf.x += rawmouse->lLastX;
+                dxgi.raw_mouse_delta_buf.y += rawmouse->lLastY;
+            }
+            input = NEXTRAWINPUTBLOCK(input);
+        }
+    }
 }
 
 void gfx_dxgi_init(const char* game_name, const char* gfx_api_name, bool start_in_fullscreen, uint32_t width,
