@@ -435,10 +435,6 @@ static LRESULT CALLBACK gfx_dxgi_wnd_proc(HWND h_wnd, UINT message, WPARAM w_par
         case WM_MOUSEWHEEL:
             dxgi.mouse_wheel[1] = GET_WHEEL_DELTA_WPARAM(w_param) / WHEEL_DELTA;
             break;
-        case WM_INPUT: {
-            SPDLOG_INFO("LIAR LIAR PANTS ON FIRE!");
-            break;
-        }
         case WM_DROPFILES:
             DragQueryFileA((HDROP)w_param, 0, fileName, 256);
             Ship::Context::GetInstance()->GetConsoleVariables()->SetString(CVAR_DROPPED_FILE, fileName);
