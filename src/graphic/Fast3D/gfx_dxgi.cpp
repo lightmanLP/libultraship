@@ -486,10 +486,9 @@ void gfx_dxgi_handle_raw_input_buffered() {
     static size_t bufsize;
     static const UINT RAWINPUT_BUFFER_SIZE_INCREMENT = 48 * 4; // 4 64-bit raw mouse packets
 
-    UINT total = 0;
-    RAWINPUT* input = (RAWINPUT*)buf;
     while (true) {
-        UINT size = bufsize - (UINT)((BYTE*)input - buf);
+        RAWINPUT* input = (RAWINPUT*)buf;
+        UINT size = bufsize;
         UINT count = GetRawInputBuffer(input, &size, sizeof(RAWINPUTHEADER));
 
         if (!buf || (count == -1 && GetLastError() == ERROR_INSUFFICIENT_BUFFER)) {
@@ -498,35 +497,25 @@ void gfx_dxgi_handle_raw_input_buffered() {
             if (!newbuf) {
                 break;
             }
-            input = (RAWINPUT*)(newbuf + ((BYTE*)input - buf));
             buf = newbuf;
             bufsize += RAWINPUT_BUFFER_SIZE_INCREMENT;
+            input = (RAWINPUT*)newbuf;
         } else if (count == -1) {
             // unhandled error
             DWORD err = GetLastError();
             fprintf(stderr, "Error: %lu\n", err);
         } else if (count == 0) {
-            // there are no events left
+            // there are no events
             break;
         } else {
-            total += count;
-
-            // skip to the end of buffer
             while (count--) {
+                if (input->header.dwType == RIM_TYPEMOUSE) {
+                    RAWMOUSE* rawmouse = (RAWMOUSE*)((BYTE*)input + offset);
+                    dxgi.raw_mouse_delta_buf.x += rawmouse->lLastX;
+                    dxgi.raw_mouse_delta_buf.y += rawmouse->lLastY;
+                }
                 input = NEXTRAWINPUTBLOCK(input);
             }
-        }
-    }
-
-    if (total > 0) {
-        input = (RAWINPUT*)buf;
-        for (UINT i = 0; i < total; i++) {
-            if (input->header.dwType == RIM_TYPEMOUSE) {
-                RAWMOUSE* rawmouse = (RAWMOUSE*)((BYTE*)input + offset);
-                dxgi.raw_mouse_delta_buf.x += rawmouse->lLastX;
-                dxgi.raw_mouse_delta_buf.y += rawmouse->lLastY;
-            }
-            input = NEXTRAWINPUTBLOCK(input);
         }
     }
 }
