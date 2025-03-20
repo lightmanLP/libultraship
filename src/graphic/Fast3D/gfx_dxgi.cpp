@@ -344,6 +344,8 @@ static void apply_mouse_capture_clip() {
     ClipCursor(&rect);
 }
 
+void gfx_dxgi_get_mouse_pos(int32_t* x, int32_t* y);
+
 static LRESULT CALLBACK gfx_dxgi_wnd_proc(HWND h_wnd, UINT message, WPARAM w_param, LPARAM l_param) {
     char fileName[256];
     Ship::WindowEvent event_impl;
@@ -463,14 +465,13 @@ static LRESULT CALLBACK gfx_dxgi_wnd_proc(HWND h_wnd, UINT message, WPARAM w_par
             break;
         case WM_SETFOCUS:
             dxgi.in_focus = true;
+            gfx_dxgi_get_mouse_pos(&dxgi.prev_mouse_cursor_pos.x, &dxgi.prev_mouse_cursor_pos.y);
             if (dxgi.is_mouse_captured) {
                 apply_mouse_capture_clip();
             }
             break;
         case WM_KILLFOCUS:
             dxgi.in_focus = false;
-            dxgi.prev_mouse_cursor_pos.x = 0;
-            dxgi.prev_mouse_cursor_pos.y = 0;
             break;
         default:
             return DefWindowProcW(h_wnd, message, w_param, l_param);
