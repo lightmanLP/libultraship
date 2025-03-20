@@ -110,6 +110,9 @@ static struct {
     void (*on_all_keys_up)(void);
     bool (*on_mouse_button_down)(int btn);
     bool (*on_mouse_button_up)(int btn);
+
+    int32_t handler_side_counter;
+    int32_t buffered_side_counter;
 } dxgi;
 
 static void load_dxgi_library() {
@@ -381,6 +384,7 @@ void gfx_dxgi_handle_raw_input_buffered() {
             // there are no events
             break;
         } else {
+            dxgi.buffered_side_counter += count;
             if (dxgi.is_mouse_captured && dxgi.in_focus) {
                 while (count--) {
                     if (input->header.dwType == RIM_TYPEMOUSE) {
@@ -499,6 +503,7 @@ static LRESULT CALLBACK gfx_dxgi_wnd_proc(HWND h_wnd, UINT message, WPARAM w_par
                     dxgi.raw_mouse_delta_buf.y += raw->data.mouse.lLastY;
                 }
             }
+            dxgi.handler_side_counter++;
             // The rest still needs to use that, to get them off the queue.
             gfx_dxgi_handle_raw_input_buffered();
             break;
