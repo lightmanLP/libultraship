@@ -11,7 +11,7 @@ namespace Ship {
 
 #define BUTTON_BITMASKS                                                                                             \
     BTN_A, BTN_B, BTN_L, BTN_R, BTN_Z, BTN_START, BTN_CLEFT, BTN_CRIGHT, BTN_CUP, BTN_CDOWN, BTN_DLEFT, BTN_DRIGHT, \
-        BTN_DUP, BTN_DDOWN
+        BTN_DUP, BTN_DDOWN, BTN_CUSTOM_FULLSCREEN, BTN_CUSTOM_MOUSE_CAPTURE
 
 class ControllerButton {
   public:

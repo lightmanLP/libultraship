@@ -57,7 +57,7 @@
 #define PFS_ERR_NOPACK 1
 
 #ifndef CONTROLLERBUTTONS_T
-#define CONTROLLERBUTTONS_T uint16_t
+#define CONTROLLERBUTTONS_T uint32_t
 #endif
 
 /* Buttons */
@@ -83,6 +83,10 @@
 #define BTN_VSTICKDOWN 0x200000
 #define BTN_VSTICKLEFT 0x400000
 #define BTN_VSTICKRIGHT 0x800000
+
+/* Custom buttons */
+#define BTN_CUSTOM_FULLSCREEN 0x1000000
+#define BTN_CUSTOM_MOUSE_CAPTURE 0x2000000
 
 typedef struct {
     /* 0x00 */ int32_t ram[15];

@@ -21,7 +21,7 @@ void InputEditorWindow::InitElement() {
     mRumbleMappingToTest = nullptr;
     mInputEditorPopupOpen = false;
 
-    mButtonsBitmasks = { BTN_A, BTN_B, BTN_START, BTN_L, BTN_R, BTN_Z, BTN_CUP, BTN_CDOWN, BTN_CLEFT, BTN_CRIGHT };
+    mButtonsBitmasks = { BTN_A, BTN_B, BTN_START, BTN_L, BTN_R, BTN_Z, BTN_CUP, BTN_CDOWN, BTN_CLEFT, BTN_CRIGHT, BTN_CUSTOM_FULLSCREEN, BTN_CUSTOM_MOUSE_CAPTURE };
     mDpadBitmasks = { BTN_DUP, BTN_DDOWN, BTN_DLEFT, BTN_DRIGHT };
 }
 
@@ -184,12 +184,17 @@ void InputEditorWindow::GetButtonColorsForPhysicalDeviceType(PhysicalDeviceType 
     }
 }
 
-void InputEditorWindow::DrawInputChip(const char* buttonName, ImVec4 color = CHIP_COLOR_N64_GREY) {
+float InputEditorWindow::DrawInputChip(const char* buttonName, ImVec4 color = CHIP_COLOR_N64_GREY, bool fixedSize = true) {
     ImGui::BeginDisabled();
     ImGui::PushStyleColor(ImGuiCol_Button, color);
-    ImGui::Button(buttonName, ImVec2(SCALE_IMGUI_SIZE(50.0f), 0));
+    float width = SCALE_IMGUI_SIZE(50.0f);
+    if (!fixedSize) {
+        width = std::fmax(ImGui::CalcTextSize(buttonName).x + SCALE_IMGUI_SIZE(5.0f), width);
+    }
+    ImGui::Button(buttonName, ImVec2(width, 0));
     ImGui::PopStyleColor();
     ImGui::EndDisabled();
+    return width;
 }
 
 void InputEditorWindow::DrawButtonLineAddMappingButton(uint8_t port, CONTROLLERBUTTONS_T bitmask) {
@@ -418,11 +423,11 @@ void InputEditorWindow::DrawButtonLineEditMappingButton(uint8_t port, CONTROLLER
 }
 
 void InputEditorWindow::DrawButtonLine(const char* buttonName, uint8_t port, CONTROLLERBUTTONS_T bitmask,
-                                       ImVec4 color = CHIP_COLOR_N64_GREY) {
+                                          ImVec4 color = CHIP_COLOR_N64_GREY, bool fixedSize = true) {
     ImGui::NewLine();
     ImGui::SameLine(SCALE_IMGUI_SIZE(32.0f));
-    DrawInputChip(buttonName, color);
-    ImGui::SameLine(SCALE_IMGUI_SIZE(86.0f));
+    float chipWidth = DrawInputChip(buttonName, color, fixedSize);
+    ImGui::SameLine(SCALE_IMGUI_SIZE(32.0f + 4.0f) + chipWidth);
     for (auto id : mBitmaskToMappingIds[port][bitmask]) {
         DrawButtonLineEditMappingButton(port, bitmask, id);
     }
@@ -1260,6 +1265,8 @@ void InputEditorWindow::DrawPortTab(uint8_t portIndex) {
                            CHIP_COLOR_N64_YELLOW);
             DrawButtonLine(StringHelper::Sprintf("C %s", ICON_FA_ARROW_RIGHT).c_str(), portIndex, BTN_CRIGHT,
                            CHIP_COLOR_N64_YELLOW);
+            DrawButtonLine("Fullscreen", portIndex, BTN_CUSTOM_FULLSCREEN);
+            DrawButtonLine("Mouse capture", portIndex, BTN_CUSTOM_MOUSE_CAPTURE);
         }
 
         if (ImGui::CollapsingHeader("D-Pad", NULL, ImGuiTreeNodeFlags_DefaultOpen)) {
@@ -1275,6 +1282,11 @@ void InputEditorWindow::DrawPortTab(uint8_t portIndex) {
 
         if (ImGui::CollapsingHeader("Additional (\"Right\") Stick")) {
             DrawStickSection(portIndex, RIGHT, 1, CHIP_COLOR_N64_YELLOW);
+        }
+
+        if (ImGui::CollapsingHeader("Custom buttons")) {
+            DrawButtonLine("Fullscreen", portIndex, BTN_CUSTOM_FULLSCREEN, CHIP_COLOR_N64_GREY, false);
+            DrawButtonLine("Mouse capture", portIndex, BTN_CUSTOM_MOUSE_CAPTURE, CHIP_COLOR_N64_GREY, false);
         }
 
         if (ImGui::CollapsingHeader("Rumble")) {

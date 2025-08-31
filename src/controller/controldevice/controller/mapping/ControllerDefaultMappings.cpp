@@ -64,6 +64,9 @@ void ControllerDefaultMappings::SetDefaultKeyboardKeyToButtonMappings(
     mDefaultKeyboardKeyToButtonMappings[BTN_DDOWN] = { KbScancode::LUS_KB_G };
     mDefaultKeyboardKeyToButtonMappings[BTN_DLEFT] = { KbScancode::LUS_KB_F };
     mDefaultKeyboardKeyToButtonMappings[BTN_DRIGHT] = { KbScancode::LUS_KB_H };
+
+    mDefaultKeyboardKeyToButtonMappings[BTN_CUSTOM_FULLSCREEN] = { KbScancode::LUS_KB_F11 };
+    mDefaultKeyboardKeyToButtonMappings[BTN_CUSTOM_MOUSE_CAPTURE] = { KbScancode::LUS_KB_F2 };
 }
 
 std::unordered_map<StickIndex, std::vector<std::pair<Direction, KbScancode>>>

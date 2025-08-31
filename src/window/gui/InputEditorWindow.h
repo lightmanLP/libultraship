@@ -16,7 +16,7 @@ class InputEditorWindow : public GuiWindow {
     using GuiWindow::GuiWindow;
     virtual ~InputEditorWindow();
 
-    void DrawInputChip(const char* buttonName, ImVec4 color);
+    float DrawInputChip(const char* buttonName, ImVec4 color, bool fixedWidth);
     void DrawAnalogPreview(const char* label, ImVec2 stick, float deadzone = 0, bool gyro = false);
     bool TestingRumble();
 
@@ -28,7 +28,7 @@ class InputEditorWindow : public GuiWindow {
   private:
     void DrawStickDirectionLine(const char* axisDirectionName, uint8_t port, uint8_t stick, Direction direction,
                                 ImVec4 color);
-    void DrawButtonLine(const char* buttonName, uint8_t port, CONTROLLERBUTTONS_T bitmask, ImVec4 color);
+    void DrawButtonLine(const char* buttonName, uint8_t port, CONTROLLERBUTTONS_T bitmask, ImVec4 color, bool fixedWidth);
     void DrawButtonLineEditMappingButton(uint8_t port, CONTROLLERBUTTONS_T bitmask, std::string id);
     void DrawButtonLineAddMappingButton(uint8_t port, CONTROLLERBUTTONS_T bitmask);
 
