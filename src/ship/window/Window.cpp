@@ -115,6 +115,10 @@ void Window::SetMouseCaptureScancode(int32_t scancode) {
     mMouseCaptureScancode = scancode;
 }
 
+void Window::ToggleMouseCaptureOverride() {
+    SetMouseCapture(!IsMouseCaptured());
+}
+
 void Window::SetWindowBackend(WindowBackend backend) {
     mWindowBackend = backend;
     Context::GetInstance()->GetConfig()->SetWindowBackend(GetWindowBackend());

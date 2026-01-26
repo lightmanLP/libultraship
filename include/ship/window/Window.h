@@ -63,6 +63,7 @@ class Window {
     virtual bool IsRunning() = 0;
     virtual const char* GetKeyName(int32_t scancode) = 0;
     virtual uintptr_t GetGfxFrameBuffer() = 0;
+    virtual void ToggleMouseCaptureOverride();
 
     WindowBackend GetWindowBackend();
     std::shared_ptr<std::vector<WindowBackend>> GetAvailableWindowBackends();

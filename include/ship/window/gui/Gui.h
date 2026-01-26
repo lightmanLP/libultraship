@@ -107,6 +107,8 @@ class Gui {
     void UnblockGamepadNavigation();
     void ShutDownImGui(Ship::Window* window);
 
+    virtual void UpdateMouseCapture();
+
   protected:
     void StartFrame();
     void EndFrame();

@@ -537,14 +537,7 @@ void Gui::DrawMenu() {
                    GetMenuBar()) {
             GetMenuBar()->ToggleVisibility();
         }
-        if (!GetMenuOrMenubarVisible()) {
-            Context::GetInstance()->GetWindow()->SetMouseCapture(wnd->ShouldAutoCaptureMouse());
-        } else {
-            Context::GetInstance()->GetWindow()->SetMouseCapture(false);
-            Context::GetInstance()->GetWindow()->SetCursorVisibility(true);
-            auto wnd = std::dynamic_pointer_cast<Fast::Fast3dWindow>(Context::GetInstance()->GetWindow());
-            mCursorVisibleTicks = mCursorVisibleSeconds * wnd->GetTargetFps();
-        }
+        UpdateMouseCapture();
         if (Ship::Context::GetInstance()->GetConsoleVariables()->GetInteger(CVAR_IMGUI_CONTROLLER_NAV, 0) &&
             GetMenuOrMenubarVisible()) {
             mImGuiIo->ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
@@ -577,6 +570,19 @@ void Gui::DrawMenu() {
     }
 
     ImGui::End();
+}
+
+void Gui::UpdateMouseCapture() {
+    const std::shared_ptr<Window> window = Context::GetInstance()->GetWindow();
+    if (!GetMenuOrMenubarVisible()) {
+        window->SetMouseCapture(window->ShouldAutoCaptureMouse());
+    } else {
+        window->SetMouseCapture(false);
+        // TODO: remove?
+        // window->SetCursorVisibility(true);
+        auto wnd = std::dynamic_pointer_cast<Fast::Fast3dWindow>(window);
+        mCursorVisibleTicks = mCursorVisibleSeconds * wnd->GetTargetFps();
+    }
 }
 
 void Gui::HandleMouseCapture() {
