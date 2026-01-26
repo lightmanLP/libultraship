@@ -60,8 +60,16 @@ void MouseCaptureManager::SetForceCursorVisibility(bool visible) {
     mForceCursorVisibility = visible;
 }
 
-void MouseCaptureManager::SetCursorVisibilityTime(int32_t seconds) {
+void MouseCaptureManager::SetCursorVisibilityTime(uint32_t seconds) {
     mCursorVisibleSeconds = seconds;
+}
+
+uint32_t MouseCaptureManager::GetCursorVisibilityTime() {
+    return mCursorVisibleSeconds;
+}
+
+void MouseCaptureManager::SetCursorVisibleTicks(uint32_t ticks) {
+    mCursorVisibleTicks = ticks;
 }
 
 void MouseCaptureManager::ToggleMouseCaptureOverride() {

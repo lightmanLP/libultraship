@@ -15,13 +15,15 @@ class MouseCaptureManager {
     virtual bool ShouldForceCursorVisibility();
     virtual void SetForceCursorVisibility(bool visible);
 
-    virtual void SetCursorVisibilityTime(int32_t seconds);
-
     virtual void ToggleMouseCaptureOverride();
     virtual void UpdateMouseCapture();
 
+    void SetCursorVisibilityTime(uint32_t seconds);
+    uint32_t GetCursorVisibilityTime();
+
   protected:
-    virtual void CursorTimeoutTick();
+    void CursorTimeoutTick();
+    void SetCursorVisibleTicks(uint32_t ticks);
 
   // subsequent
   private:
