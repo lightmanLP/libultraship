@@ -53,8 +53,6 @@ namespace Ship {
 #define TOGGLE_BTN ImGuiKey_F1
 #define TOGGLE_PAD_BTN ImGuiKey_GamepadBack
 
-static Ship::Coords mPrevMousePos;
-
 Gui::Gui(std::vector<std::shared_ptr<GuiWindow>> guiWindows) : mNeedsConsoleVariableSave(false) {
     mGameOverlay = std::make_shared<GameOverlay>();
 
@@ -537,7 +535,7 @@ void Gui::DrawMenu() {
                    GetMenuBar()) {
             GetMenuBar()->ToggleVisibility();
         }
-        UpdateMouseCapture();
+        Ship::Context::GetInstance()->GetWindow()->GetMouseCaptureManager()->UpdateMouseCapture();
         if (Ship::Context::GetInstance()->GetConsoleVariables()->GetInteger(CVAR_IMGUI_CONTROLLER_NAV, 0) &&
             GetMenuOrMenubarVisible()) {
             mImGuiIo->ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
@@ -572,19 +570,6 @@ void Gui::DrawMenu() {
     ImGui::End();
 }
 
-void Gui::UpdateMouseCapture() {
-    const std::shared_ptr<Window> window = Context::GetInstance()->GetWindow();
-    if (!GetMenuOrMenubarVisible()) {
-        window->SetMouseCapture(window->ShouldAutoCaptureMouse());
-    } else {
-        window->SetMouseCapture(false);
-        // TODO: remove?
-        // window->SetCursorVisibility(true);
-        auto wnd = std::dynamic_pointer_cast<Fast::Fast3dWindow>(window);
-        mCursorVisibleTicks = mCursorVisibleSeconds * wnd->GetTargetFps();
-    }
-}
-
 void Gui::HandleMouseCapture() {
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoMouseInputs;
     for (auto windowIter : ImGui::GetCurrentContext()->WindowsById.Data) {
@@ -599,39 +584,8 @@ void Gui::HandleMouseCapture() {
     }
 }
 
-void Gui::CursorTimeoutTick() {
-    auto wnd = std::dynamic_pointer_cast<Fast::Fast3dWindow>(Context::GetInstance()->GetWindow());
-    if (wnd->ShouldForceCursorVisibility() || wnd->IsMouseCaptured()) {
-        return;
-    }
-
-    Ship::Coords mousePos = wnd->GetMousePos();
-    bool mouseMoved = abs(mousePos.x - mPrevMousePos.x) > 0 || abs(mousePos.y - mPrevMousePos.y) > 0;
-    mPrevMousePos = mousePos;
-
-    if (mouseMoved) {
-        wnd->SetCursorVisibility(true);
-        mCursorVisibleTicks = mCursorVisibleSeconds * wnd->GetTargetFps();
-        return;
-    }
-
-    if (mCursorVisibleTicks == 0) {
-        wnd->SetCursorVisibility(false);
-        mCursorVisibleTicks = -1;
-        return;
-    }
-
-    if (mCursorVisibleTicks > 0) {
-        mCursorVisibleTicks--;
-    }
-}
-
-void Gui::SetCursorVisibilityTime(int32_t seconds) {
-    mCursorVisibleSeconds = seconds;
-}
-
 void Gui::StartFrame() {
-    CursorTimeoutTick();
+    Context::GetInstance()->GetWindow()->GetMouseCaptureManager()->StartFrame(); // TODO: find better place to do so
     HandleMouseCapture();
     ImGuiBackendNewFrame();
     ImGuiWMNewFrame();

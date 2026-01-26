@@ -1,5 +1,6 @@
 #pragma once
 #include "ship/window/Window.h"
+#include "ship/window/MouseCaptureManager.h"
 #include "ship/window/gui/Gui.h"
 #include "ship/controller/controldevice/controller/mapping/keyboard/KeyboardScancodes.h"
 
@@ -12,6 +13,7 @@ class Fast3dWindow : public Ship::Window {
     Fast3dWindow();
     Fast3dWindow(std::vector<std::shared_ptr<Ship::GuiWindow>> guiWindows);
     Fast3dWindow(std::shared_ptr<Ship::Gui> gui);
+    Fast3dWindow(std::shared_ptr<Ship::Gui> gui, std::shared_ptr<Ship::MouseCaptureManager> mouseCaptureManager);
     ~Fast3dWindow();
 
     void Init() override;

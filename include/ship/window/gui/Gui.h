@@ -107,8 +107,6 @@ class Gui {
     void UnblockGamepadNavigation();
     void ShutDownImGui(Ship::Window* window);
 
-    virtual void UpdateMouseCapture();
-
   protected:
     void StartFrame();
     void EndFrame();
@@ -128,8 +126,6 @@ class Gui {
     int16_t GetIntegerScaleFactor();
     void CheckSaveCvars();
     void HandleMouseCapture();
-    void CursorTimeoutTick();
-    void SetCursorVisibilityTime(int32_t seconds);
     ImVec2 mTemporaryWindowPos;
     ImGuiIO* mImGuiIo;
     std::map<std::string, std::shared_ptr<GuiWindow>> mGuiWindows;
@@ -144,8 +140,6 @@ class Gui {
     std::shared_ptr<GuiMenuBar> mMenuBar;
     std::shared_ptr<GuiWindow> mMenu;
     std::unordered_map<std::string, GuiTextureMetadata> mGuiTextures;
-    uint32_t mCursorVisibleTicks = 180;
-    uint32_t mCursorVisibleSeconds = 3;
 };
 } // namespace Ship
 

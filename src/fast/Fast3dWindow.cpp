@@ -19,7 +19,10 @@ namespace Fast {
 
 extern void GfxSetInstance(std::shared_ptr<Interpreter> gfx);
 
-Fast3dWindow::Fast3dWindow(std::shared_ptr<Ship::Gui> gui) : Ship::Window(gui) {
+Fast3dWindow::Fast3dWindow(
+    std::shared_ptr<Ship::Gui> gui,
+    std::shared_ptr<Ship::MouseCaptureManager> mouseCaptureManager
+) : Ship::Window(gui, mouseCaptureManager) {
     mWindowManagerApi = nullptr;
     mRenderingApi = nullptr;
     mInterpreter = std::make_shared<Interpreter>();
@@ -34,6 +37,9 @@ Fast3dWindow::Fast3dWindow(std::shared_ptr<Ship::Gui> gui) : Ship::Window(gui) {
     }
 #endif
     AddAvailableWindowBackend(Ship::WindowBackend::FAST3D_SDL_OPENGL);
+}
+
+Fast3dWindow::Fast3dWindow(std::shared_ptr<Ship::Gui> gui) : Fast3dWindow(gui, std::make_shared<Ship::MouseCaptureManager>()) {
 }
 
 Fast3dWindow::Fast3dWindow(std::vector<std::shared_ptr<Ship::GuiWindow>> guiWindows)
@@ -337,7 +343,7 @@ bool Fast3dWindow::KeyUp(int32_t scancode) {
     }
 
     if (scancode == Ship::Context::GetInstance()->GetWindow()->GetMouseCaptureScancode()) {
-        Ship::Context::GetInstance()->GetWindow()->ToggleMouseCaptureOverride();
+        Ship::Context::GetInstance()->GetWindow()->GetMouseCaptureManager()->ToggleMouseCaptureOverride();
     }
 
     Ship::Context::GetInstance()->GetWindow()->SetLastScancode(-1);
