@@ -15,7 +15,7 @@ void MouseStateManager::StartFrame() {
 }
 
 void MouseStateManager::CursorVisibilityTimeoutTick() {
-    static Coords mPrevMousePos;
+    static Coords sPrevMousePos;
 
     std::shared_ptr<Window> wnd = Context::GetInstance()->GetWindow();
     if (ShouldForceCursorVisibility() || wnd->IsMouseCaptured()) {
@@ -23,8 +23,8 @@ void MouseStateManager::CursorVisibilityTimeoutTick() {
     }
 
     Coords mousePos = wnd->GetMousePos();
-    bool mouseMoved = abs(mousePos.x - mPrevMousePos.x) > 0 || abs(mousePos.y - mPrevMousePos.y) > 0;
-    mPrevMousePos = mousePos;
+    bool mouseMoved = abs(mousePos.x - sPrevMousePos.x) > 0 || abs(mousePos.y - sPrevMousePos.y) > 0;
+    sPrevMousePos = mousePos;
 
     if (mouseMoved) {
         wnd->SetCursorVisibility(true);
