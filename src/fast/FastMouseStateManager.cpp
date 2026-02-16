@@ -8,6 +8,7 @@ namespace Fast {
 void FastMouseStateManager::ResetCursorVisibilityTimer() {
     auto wnd = std::dynamic_pointer_cast<Fast3dWindow>(Ship::Context::GetInstance()->GetWindow());
     SetCursorVisibilityTimeTicks(mCursorVisibleSeconds * wnd->GetTargetFps());
+    MouseStateManager::ResetCursorVisibilityTimer();
 }
 
 void FastMouseStateManager::SetCursorVisibilityTime(uint32_t seconds) {
