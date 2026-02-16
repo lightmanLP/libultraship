@@ -4,9 +4,11 @@
 #include "ship/window/Window.h"
 
 namespace Ship {
-MouseStateManager::MouseStateManager() {}
+MouseStateManager::MouseStateManager() {
+}
 
-MouseStateManager::~MouseStateManager() {}
+MouseStateManager::~MouseStateManager() {
+}
 
 void MouseStateManager::StartFrame() {
     CursorVisibilityTimeoutTick();
