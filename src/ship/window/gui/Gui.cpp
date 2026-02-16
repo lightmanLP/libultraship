@@ -585,7 +585,6 @@ void Gui::HandleMouseCapture() {
 }
 
 void Gui::StartFrame() {
-    Context::GetInstance()->GetWindow()->GetMouseStateManager()->StartFrame(); // TODO: find better place to do so
     HandleMouseCapture();
     ImGuiBackendNewFrame();
     ImGuiWMNewFrame();
