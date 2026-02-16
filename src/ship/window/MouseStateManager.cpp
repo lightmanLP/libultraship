@@ -68,8 +68,6 @@ void MouseStateManager::UpdateMouseCapture() {
         window->SetMouseCapture(ShouldAutoCaptureMouse());
     } else {
         window->SetMouseCapture(false);
-        // TODO: remove?
-        // window->SetCursorVisibility(true);
         ResetCursorVisibilityTimer();
     }
 }
