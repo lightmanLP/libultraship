@@ -535,7 +535,7 @@ void Gui::DrawMenu() {
                    GetMenuBar()) {
             GetMenuBar()->ToggleVisibility();
         }
-        Ship::Context::GetInstance()->GetWindow()->GetMouseCaptureManager()->UpdateMouseCapture();
+        Ship::Context::GetInstance()->GetWindow()->GetMouseStateManager()->UpdateMouseCapture();
         if (Ship::Context::GetInstance()->GetConsoleVariables()->GetInteger(CVAR_IMGUI_CONTROLLER_NAV, 0) &&
             GetMenuOrMenubarVisible()) {
             mImGuiIo->ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
@@ -585,7 +585,7 @@ void Gui::HandleMouseCapture() {
 }
 
 void Gui::StartFrame() {
-    Context::GetInstance()->GetWindow()->GetMouseCaptureManager()->StartFrame(); // TODO: find better place to do so
+    Context::GetInstance()->GetWindow()->GetMouseStateManager()->StartFrame(); // TODO: find better place to do so
     HandleMouseCapture();
     ImGuiBackendNewFrame();
     ImGuiWMNewFrame();

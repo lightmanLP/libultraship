@@ -3,10 +3,10 @@
 #include <memory>
 
 namespace Ship {
-class MouseCaptureManager {
+class MouseStateManager {
   public:
-    MouseCaptureManager();
-    virtual ~MouseCaptureManager();
+    MouseStateManager();
+    virtual ~MouseStateManager();
 
     virtual void StartFrame();
 
@@ -18,19 +18,18 @@ class MouseCaptureManager {
     virtual void ToggleMouseCaptureOverride();
     virtual void UpdateMouseCapture();
 
-    void SetCursorVisibilityTime(uint32_t seconds);
-    uint32_t GetCursorVisibilityTime();
+    virtual void ResetCursorVisibilityTimer();
+    void SetCursorVisibilityTimeTicks(uint32_t ticks);
+    uint32_t GetCursorVisibilityTimeTicks();
 
   protected:
-    void CursorTimeoutTick();
-    void SetCursorVisibleTicks(uint32_t ticks);
+    void CursorVisibilityTimeoutTick();
 
-  // subsequent
   private:
     bool mAutoCaptureMouse = false;
     bool mForceCursorVisibility = false;
 
     uint32_t mCursorVisibleTicks = 180;
-    uint32_t mCursorVisibleSeconds = 3;
+    uint32_t mCursorVisibleTicksCounter = mCursorVisibleTicks;
 };
 } // namespace Ship
