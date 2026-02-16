@@ -70,7 +70,7 @@ void MouseStateManager::UpdateMouseCapture() {
         window->SetMouseCapture(false);
         // TODO: remove?
         // window->SetCursorVisibility(true);
-        mCursorVisibleTicksCounter = mCursorVisibleTicks;
+        ResetCursorVisibilityTimer();
     }
 }
 
