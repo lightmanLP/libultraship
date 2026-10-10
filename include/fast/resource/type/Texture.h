@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ship/resource/Resource.h"
+#include <cstdint>
 #include <memory>
 #include <vector>
 
@@ -40,6 +41,12 @@ class Texture final : public Ship::Resource<uint8_t> {
     // When set, ImageData points into this buffer and must not be delete[]-ed.
     std::shared_ptr<std::vector<char>> mImageBuffer;
 
+    // Process-unique id; used by the texture cache instead of the pixel address.
+    uint64_t Identity = NextIdentity();
+
     ~Texture();
+
+  private:
+    static uint64_t NextIdentity();
 };
 } // namespace Fast

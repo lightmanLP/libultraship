@@ -184,6 +184,8 @@ struct TextureCacheKey {
     uint8_t fmt, siz;
     uint8_t palette_index;
     uint32_t size_bytes;
+    // Source resource identity (0 for raw textures). Hasher stays address-only.
+    uint64_t resource_id = 0;
 
     bool operator==(const TextureCacheKey&) const noexcept = default;
 

@@ -1311,6 +1311,12 @@ void Interpreter::ImportTexture(int i, int tile, bool importReplacement) {
         key = { origAddr, {}, fmt, siz, paletteIndex, origSizeBytes };
     }
 
+    // Address can be reused by a different texture; key on the resource too.
+    if (!importReplacement) {
+        const RawTexMetadata& resourceMeta = mRdp->loaded_texture[tmemIdex].raw_tex_metadata;
+        key.resource_id = resourceMeta.resource != nullptr ? resourceMeta.resource->Identity : 0;
+    }
+
     if (TextureCacheLookup(i, key)) {
         return;
     }
@@ -1410,6 +1416,7 @@ void Interpreter::ImportTextureMask(int i, int tile) {
     }
 
     TextureCacheKey key = { orig_addr, {}, 0, 0, 0, 0 };
+    key.resource_id = metadata.resource != nullptr ? metadata.resource->Identity : 0;
 
     if (TextureCacheLookup(i, key)) {
         return;
