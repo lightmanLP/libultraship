@@ -38,13 +38,6 @@ class MemoryStream final : public Stream {
      * @param buffer Shared vector to use as the backing store.
      */
     MemoryStream(std::shared_ptr<std::vector<char>> buffer);
-
-    /**
-     * @brief Constructs a memory stream over a shared vector at a given byte offset.
-     * @param buffer Shared vector to use as the backing store.
-     * @param offset Initial seek position (byte offset from the beginning of @p buffer).
-     */
-    MemoryStream(std::shared_ptr<std::vector<char>> buffer, size_t offset);
     ~MemoryStream();
 
     /**

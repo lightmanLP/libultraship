@@ -57,8 +57,6 @@ struct ResourceInitData {
 struct File {
     /** @brief Raw byte buffer of the file contents. */
     std::shared_ptr<std::vector<char>> Buffer;
-    /** @brief Byte offset into Buffer where the resource payload starts (after any header). */
-    size_t BufferOffset = 0;
     /** @brief Parsed reader; either a BinaryReader or an XMLDocument, depending on the format. */
     std::variant<std::shared_ptr<tinyxml2::XMLDocument>, std::shared_ptr<BinaryReader>> Reader;
     /** @brief True once the file has been fully loaded from its backing store. */

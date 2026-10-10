@@ -13,7 +13,7 @@ size_t Texture::GetPointerSize() {
 }
 
 Texture::~Texture() {
-    if (ImageData != nullptr && !mImageBuffer) {
+    if (ImageData != nullptr) {
         delete[] ImageData;
     }
 }
